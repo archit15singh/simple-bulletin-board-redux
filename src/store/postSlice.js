@@ -16,8 +16,20 @@ const postSlice = createSlice({
         return post.id !== action.payload
       });
     },
+    incrementLike: (state, action) => {
+      const {buttonName, postId} = action.payload
+      for (let i=0; i<state.data.length;i++) {
+        if (state.data[i].id === postId) {
+          for (const item of state.data[i].likeButtons) {
+            if (item.name === buttonName.name) {
+              item.count += 1
+            }
+          }
+        }
+      }
+    }
   },
 });
 
-export const { addPost, deletePost } = postSlice.actions;
+export const { addPost, deletePost, incrementLike } = postSlice.actions;
 export const reducers = postSlice.reducer;

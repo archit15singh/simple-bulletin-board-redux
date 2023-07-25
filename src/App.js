@@ -1,9 +1,11 @@
 import "./App.css";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { addPost, deletePost } from "./store/postSlice";
+import { addPost, deletePost, incrementLike } from "./store/postSlice";
 import { format } from "date-fns";
 import Post from "./Post";
+
+const likeButtons = ["👍", "😯", "❤️", "✏️", "🎉"];
 
 function App() {
   const posts = useSelector((state) => state.posts.data);
@@ -36,6 +38,9 @@ function App() {
       ...formData,
       id: randomId,
       createdOn: formattedDate,
+      likeButtons: likeButtons.map((buttonName) => {
+        return {name: buttonName, count: 0}
+      })
     };
 
     dispatch(addPost(newPost));
@@ -45,6 +50,15 @@ function App() {
   const handleDeletePost = (event, postId) => {
     dispatch(deletePost(postId));
   };
+
+  const handleLikeButton = (event, buttonName, postId) => {
+    const actionPayload = {
+      buttonName: buttonName,
+      postId: postId
+    }
+
+    dispatch(incrementLike(actionPayload))
+  }
 
   return (
     <div className="container">
@@ -93,7 +107,9 @@ function App() {
             title={post.title}
             author={post.author}
             content={post.content}
+            likeButtonsData={post.likeButtons}
             handleDeletePost={handleDeletePost}
+            handleLikeButton={handleLikeButton}
           />
         ))}
       </section>
